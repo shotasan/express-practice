@@ -9,6 +9,7 @@ var logger = require('morgan');
 // routesフォルダ内のファイルを読みこむ
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var hello = require('./routes/hello');
 
 // Expressオブジェクトの作成と基本設定
 var app = express();
@@ -30,6 +31,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // 特定のアドレスにアクセスした時の処理設定
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/hello', hello);
 
 // エラー発生時の処理
 // catch 404 and forward to error handler
