@@ -11,6 +11,7 @@ var session = require('express-session');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var hello = require('./routes/hello');
+var ajax = require('./routes/ajax');
 
 // Expressオブジェクトの作成と基本設定
 var app = express();
@@ -42,6 +43,7 @@ app.use(session(session_opt));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/hello', hello);
+app.use('/ajax', ajax);
 
 // エラー発生時の処理
 // catch 404 and forward to error handler
