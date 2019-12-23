@@ -67,23 +67,11 @@ router.post('/add', [
     }
     res.render('hello/add', data);
   } else {
-    var nm = req.body.name;
-    var ml = req.body.mail;
-    var ag = req.body.age;
-    var data = { 'name': nm, 'mail': ml, 'age': ag };
-
-    var connection = mysql.createConnection(mysql_setting);
-
-    connection.connect();
-
-    connection.query('insert into mydata set ?', data,
-      function (error, results, fields) {
-        if (error) throw error;
-        res.redirect('/hello');
-      }
-    );
-
-    connection.end();
+    var response = res;
+    console.log(req.body);
+    new MyData(req.body).save().then((model) => {
+      response.redirect('/hello');
+    });
   }
 });
 
