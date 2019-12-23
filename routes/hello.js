@@ -208,4 +208,23 @@ router.post('/find', (req, res, next) => {
     });
 });
 
+router.get('/:page', (req, res, next) => {
+  var pg = req.params.page;
+  // 値を整数に直す
+  pg *= 1;
+  if (pg < 1) { pg = 1; }
+  new MyData().fetchPage({ page: pg, pageSize: 3 }).then((collection) => {
+    var data = {
+      title: 'Hello!',
+      content: collection.toArray(),
+      pagination: collection.pagination
+    };
+    console.log(collection.pagination);
+    res.render('hello/index', data);
+  })
+    .catch((err) => {
+      res.status(500).json({ error: true, data: { message: err.message } });
+    });
+});
+
 module.exports = router;
