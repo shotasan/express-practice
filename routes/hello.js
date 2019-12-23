@@ -1,6 +1,20 @@
 var express = require('express');
 var router = express.Router();
 var mysql = require('mysql');
+var knex = require('knex')({
+  client: 'mysql',
+  connection: {
+    host: 'localhost',
+    user: 'root',
+    password: '',
+    database: 'my-nodeapp-db',
+    charset: 'utf8'
+  }
+});
+var Bookshelf = require('bookshelf')(knex);
+var MyData = Bookshelf.Model.extend({
+  tableName: 'mydata'
+});
 var { check, validationResult } = require('express-validator');
 
 // MySQLの設定情報
@@ -12,26 +26,16 @@ var mysql_setting = {
 }
 
 router.get('/', (req, res, next) => {
-  // コネクションの用意
-  var connection = mysql.createConnection(mysql_setting);
-
-  // データベースに接続
-  connection.connect();
-
-  // データの取り出し
-  connection.query("SELECT * from mydata",
-    function (error, results, fields) {
-      // データベースアクセス完了時の処理
-      if (error == null) {
-        var data = { title: 'mysql', content: results }
-        res.render('hello/index', data);
-      } else {
-        throw error;
-      }
-    });
-
-  // 接続を解除
-  connection.end();
+  new MyData().fetchAll().then((collection) => {
+    var data = {
+      title: 'Hello!',
+      content: collection.toArray()
+    };
+    res.render('hello/index', data);
+  })
+    .catch((err) => {
+      res.status(500).json({ error: true, data: { message: err.message } });
+    })
 });
 
 router.get('/add', (req, res, next) => {
